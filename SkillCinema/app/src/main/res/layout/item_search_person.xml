@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="111dp"
+    android:orientation="vertical"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="4dp">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/item_person_card"
+        android:layout_width="match_parent"
+        android:layout_height="156dp"
+        app:cardCornerRadius="4dp">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/item_person_poster"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/item_person_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:gravity="start"
+        android:maxLines="2"
+        android:paddingTop="8dp"
+        android:textColor="#272727"
+        android:textSize="14sp"
+        tools:text="Actor Name" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

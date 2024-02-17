@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_without_intro"
+    app:startDestination="@id/fragmentHome">
+    <fragment
+        android:id="@+id/fragmentHome"
+        android:name="com.example.androidfinal.ui.home.HomeFragment"
+        android:label="FragmentHome"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_fragmentHome_to_fragmentFilmDetail"
+            app:destination="@id/fragmentFilmDetail"
+            app:popUpTo="@id/fragmentHome" />
+        <action
+            android:id="@+id/action_fragmentHome_to_fragmentAllFilms"
+            app:destination="@id/fragmentAllFilms"
+            app:popUpTo="@id/fragmentHome" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentSearch"
+        android:name="com.example.androidfinal.ui.search.SearchFragment"
+        android:label="FragmentSearch"
+        tools:layout="@layout/fragment_search">
+        <action
+            android:id="@+id/action_fragmentSearch_to_fragmentSearchSettings"
+            app:destination="@id/fragmentSearchSettings"
+            app:popUpTo="@id/fragmentSearch" />
+        <action
+            android:id="@+id/action_fragmentSearch_to_fragmentFilmDetail"
+            app:destination="@id/fragmentFilmDetail"
+            app:popUpTo="@id/fragmentSearch" />
+        <action
+            android:id="@+id/action_fragmentSearch_to_fragmentPersonDetail"
+            app:destination="@id/fragmentPersonDetail"
+            app:popUpTo="@id/fragmentSearch" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentProfile"
+        android:name="com.example.androidfinal.ui.profile.ProfileFragment"
+        android:label="FragmentProfile"
+        tools:layout="@layout/fragment_profile">
+        <action
+            android:id="@+id/action_fragmentProfile_to_fragmentFilmDetail"
+            app:destination="@id/fragmentFilmDetail" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentFilmDetail"
+        android:name="com.example.androidfinal.ui.filmdetail.FilmDetailFragment"
+        android:label="FilmDetailFragment"
+        tools:layout="@layout/fragment_film_detail">
+        <action
+            android:id="@+id/action_fragmentFilmDetail_to_fragmentPersonDetail"
+            app:destination="@id/fragmentPersonDetail"
+            app:popUpTo="@id/fragmentFilmDetail"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_fragmentFilmDetail_to_fragmentGallery"
+            app:destination="@id/fragmentGallery"
+            app:popUpTo="@id/fragmentFilmDetail" />
+        <action
+            android:id="@+id/action_fragmentFilmDetail_to_fragmentPersonsByFilm"
+            app:destination="@id/fragmentFilmActors"
+            app:popUpTo="@id/fragmentFilmDetail" />
+        <action
+            android:id="@+id/action_fragmentFilmDetail_to_fragmentSimilarFilms"
+            app:destination="@id/fragmentSimilarFilms" />
+        <action
+            android:id="@+id/action_fragmentFilmDetail_to_fragmentSeries"
+            app:destination="@id/fragmentSeries"
+            app:popUpTo="@id/fragmentFilmDetail" />
+        <argument
+            android:name="filmId"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentAllFilms"
+        android:name="com.example.androidfinal.ui.allfilms.AllFilmsFragment"
+        android:label="FragmentAllFilms"
+        tools:layout="@layout/fragment_all_films">
+        <action
+            android:id="@+id/action_fragmentAllFilms_to_fragmentFilmDetail"
+            app:destination="@id/fragmentFilmDetail"
+            app:popUpTo="@id/fragmentAllFilms" />
+        <argument
+            android:name="filmCategory"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentPersonDetail"
+        android:name="com.example.androidfinal.ui.persondetail.PersonDetailFragment"
+        android:label="FragmentPersonDetail"
+        tools:layout="@layout/fragment_person_detail">
+        <action
+            android:id="@+id/action_fragmentPersonDetail_to_fragmentFilmDetail"
+            app:destination="@id/fragmentFilmDetail"
+            app:popUpTo="@id/fragmentPersonDetail" />
+        <action
+            android:id="@+id/action_fragmentPersonDetail_to_fragmentFilmography"
+            app:destination="@id/fragmentFilmography" />
+        <argument
+            android:name="personId"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentGallery"
+        android:name="com.example.androidfinal.ui.gallery.GalleryFullFragment"
+        android:label="FragmentGallery"
+        tools:layout="@layout/fragment_gallery_full">
+        <action
+            android:id="@+id/action_fragmentGallery_to_fragmentGalleryFullscreen"
+            app:destination="@id/fragmentGalleryFullscreen"
+            app:popUpTo="@id/fragmentGallery" />
+        <argument
+            android:name="filmId"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentGalleryFullscreen"
+        android:name="com.example.androidfinal.ui.gallery.GalleryFullscreenFragment"
+        android:label="FragmentGalleryFullscreen"
+        tools:layout="@layout/item_gallery_image">
+        <argument
+            android:name="position"
+            android:defaultValue="0"
+            app:argType="integer" />
+        <argument
+            android:name="galleryType"
+            app:argType="string" />
+        <argument
+            android:name="filmId"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentFilmActors"
+        android:name="com.example.androidfinal.ui.filmdetail.FilmActorsFragment"
+        android:label="FilmActorsFragment"
+        tools:layout="@layout/fragment_film_actors">
+        <action
+            android:id="@+id/action_fragmentPersonsByFilm_to_fragmentPersonDetail"
+            app:destination="@id/fragmentPersonDetail" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentSimilarFilms"
+        android:name="com.example.androidfinal.ui.filmdetail.SimilarFilmsFragment"
+        android:label="FragmentSimilarFilms">
+        <action
+            android:id="@+id/action_fragmentSimilarFilms_to_fragmentFilmDetail"
+            app:destination="@id/fragmentFilmDetail" />
+        <argument
+            android:name="filmId"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentSeries"
+        android:name="com.example.androidfinal.ui.seasons.SeasonsFragment"
+        android:label="FragmentSeries">
+        <argument
+            android:name="seriesName"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentFilmography"
+        android:name="com.example.androidfinal.ui.persondetail.FilmographyFragment"
+        android:label="FragmentFilmography">
+        <action
+            android:id="@+id/action_fragmentFilmography_to_fragmentFilmDetail"
+            app:destination="@id/fragmentFilmDetail" />
+        <argument
+            android:name="personId"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentSearchSettings"
+        android:name="com.example.androidfinal.ui.search.SearchSettingsFragment"
+        android:label="FragmentSearchSettings"
+        tools:layout="@layout/fragment_search_settings">
+        <action
+            android:id="@+id/action_fragmentSearchSettings_to_fragmentSearchFilters"
+            app:destination="@id/fragmentSearchFilters" />
+        <action
+            android:id="@+id/action_fragmentSearchSettings_to_fragmentSearchYearChoose"
+            app:destination="@id/fragmentSearchYearChoose" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentSearchFilters"
+        android:name="com.example.androidfinal.ui.search.SearchFiltersFragment"
+        android:label="FragmentSearchFilters"
+        tools:layout="@layout/fragment_search_filters">
+        <argument
+            android:name="filterType"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentSearchYearChoose"
+        android:name="com.example.androidfinal.ui.search.SearchYearChooseFragment"
+        android:label="FragmentSearchYearChoose"
+        tools:layout="@layout/fragment_search_year_choose" />
+</navigation>
