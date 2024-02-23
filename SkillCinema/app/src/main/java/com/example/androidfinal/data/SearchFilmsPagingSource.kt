@@ -28,7 +28,6 @@ class SearchFilmsPagingSource(
                 ratingTo = filters.value.ratingTo,
                 yearFrom = filters.value.yearFrom,
                 yearTo = filters.value.yearTo,
-                imdbId = filters.value.imdbId,
                 keyword = filters.value.keyword,
                 page = page
             )

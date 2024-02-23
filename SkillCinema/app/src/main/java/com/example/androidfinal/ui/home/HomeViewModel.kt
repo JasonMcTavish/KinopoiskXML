@@ -23,6 +23,7 @@ class HomeViewModel @Inject constructor(
     init {
         getFilmsByCategories()
         Log.d(TAG, "home: init")
+//        Log.d(TAG, "${TOP_TYPES.getValue(CategoriesFilms.AWAIT)}: ")
     }
 
     private val _homePageList = MutableStateFlow<List<HomeList>>(emptyList())
@@ -47,7 +48,7 @@ class HomeViewModel @Inject constructor(
                         category = CategoriesFilms.PREMIERS,
                         filmList = getTopFilmsUseCase.executeTopFilms(
                             topType = CategoriesFilms.PREMIERS.name,
-                            page = null
+                            page = 1
                         ).prepareToShow(20)
                     ),
                     HomeList(
@@ -68,10 +69,6 @@ class HomeViewModel @Inject constructor(
                         category = CategoriesFilms.TV_SERIES,
                         filmList = getTopFilmsUseCase.executeTopFilms(
                             topType = TOP_TYPES.getValue(CategoriesFilms.TV_SERIES),
-                            filters = ParamsFilterFilm(
-                                type = TOP_TYPES.getValue(CategoriesFilms.TV_SERIES),
-                                ratingFrom = 6
-                            ),
                             page = 1
                         ).prepareToShow(20)
                     )

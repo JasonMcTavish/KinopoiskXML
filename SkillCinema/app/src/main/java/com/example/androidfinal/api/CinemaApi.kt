@@ -33,6 +33,12 @@ interface CinemaApi {
         @Query("month") month: String
     ): ResponsePremier
 
+    @GET("v2.2/films")
+    suspend fun getSerialsTop(
+        @Query("type") type: String,
+        @Query("page") page: Int
+    ):ResponseFilmsByFilter
+
     // ----------------------------------
 
     // FragmentFilmDetail
@@ -70,7 +76,7 @@ interface CinemaApi {
         @Path("id") id: Int
     ): ResponsePersonById
 
-    // FragmentHome (TV_SERIES) & FragmentSearch
+    //  FragmentSearch
     @GET("v2.2/films/")
     suspend fun getFilmsByFilter(
         @Query("countries") countries: String,
@@ -81,7 +87,6 @@ interface CinemaApi {
         @Query("ratingTo") ratingTo: Int,
         @Query("yearFrom") yearFrom: Int,
         @Query("yearTo") yearTo: Int,
-        @Query("imdbId") imdbId: String?,
         @Query("keyword") keyword: String,
         @Query("page") page: Int
     ): ResponseFilmsByFilter

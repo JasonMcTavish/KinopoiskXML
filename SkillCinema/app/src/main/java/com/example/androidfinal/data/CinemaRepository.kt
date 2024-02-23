@@ -71,12 +71,10 @@ class CinemaRepository @Inject constructor(
     suspend fun getFilmsTopByCategoryList(
         categoryName: String,
         page: Int? = 1,
-        filters: ParamsFilterFilm = ParamsFilterFilm(),
         year: Int = calendar.get(Calendar.YEAR),
         month: String = (calendar.get(Calendar.MONTH) + 1).converterInMonth()
     ): List<FilmWithGenres> {
         return try {
-            Log.d(TAG, "getFilmsTopByCategoryList: 111")
             apiDatabase.clearFilmTopTypesByCategory(categoryName)
             var genresForDb: List<List<NewFilmGenres>> = emptyList()
             val filmsForDb: List<FilmsShortInfo> = when (categoryName) {
@@ -90,17 +88,8 @@ class CinemaRepository @Inject constructor(
                 }
 
                 CategoriesFilms.TV_SERIES.name -> {
-                    val response: List<FilmByFilter> = apiService.getFilmsByFilter(
-                        countries = filters.countries.keys.joinToString(","),
-                        genres = filters.genres.keys.joinToString(","),
-                        order = filters.order,
+                    val response: List<FilmByFilter> = apiService.getSerialsTop(
                         type = categoryName,
-                        ratingFrom = filters.ratingFrom,
-                        ratingTo = filters.ratingTo,
-                        yearFrom = filters.yearFrom,
-                        yearTo = filters.yearTo,
-                        imdbId = filters.imdbId,
-                        keyword = filters.keyword,
                         page = page!!
                     ).films
                     if (response.isNotEmpty()) {

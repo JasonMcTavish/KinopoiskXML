@@ -8,6 +8,6 @@ enum class CategoriesFilms(val text:String):Parcelable {
     BEST("ТОП-250"),
     POPULAR("Популярное"),
     PREMIERS("Премьеры"),
-    AWAIT("Самые ожиаемые"),
+    AWAIT("Самые ожидаемые"),
     TV_SERIES("Сериалы")
 }

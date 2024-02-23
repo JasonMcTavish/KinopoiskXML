@@ -57,17 +57,8 @@ class MediatorFilmTop(
                 }
 
                 CategoriesFilms.TV_SERIES.name -> {
-                    val response = apiService.getFilmsByFilter(
-                        countries = filters.countries.keys.joinToString(","),
-                        genres = filters.genres.keys.joinToString(","),
-                        order = filters.order,
+                    val response = apiService.getSerialsTop(
                         type = categoryName,
-                        ratingFrom = filters.ratingFrom,
-                        ratingTo = filters.ratingTo,
-                        yearFrom = filters.yearFrom,
-                        yearTo = filters.yearTo,
-                        imdbId = filters.imdbId,
-                        keyword = filters.keyword,
                         page = pageIndex
                     ).films
                     val filmsForDb = response.map { film ->

@@ -17,7 +17,7 @@ data class FilmByFilter(
     @Json(name = "kinopoiskId") val filmId: Int,
     @Json(name = "imdbId") val imdbId: String?,
     @Json(name = "nameRu") val nameRu: String?,
-    @Json(name = "nameEn") val nameEn: Any?,
+    @Json(name = "nameEn") val nameEn: String?,
     @Json(name = "nameOriginal") val nameOriginal: String?,
     @Json(name = "posterUrlPreview") val posterPreview: String,
     @Json(name = "posterUrl") val posterUrl: String,

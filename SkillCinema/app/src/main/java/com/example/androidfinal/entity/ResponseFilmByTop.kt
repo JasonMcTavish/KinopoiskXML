@@ -8,8 +8,8 @@ import kotlin.math.roundToInt
 
 @JsonClass(generateAdapter = true)
 data class ResponseFilmsTop(
-    @Json(name = "films") val films: List<FilmTop>,
-    @Json(name = "pagesCount") val page: Int
+    @Json(name = "pagesCount") val page: Int,
+    @Json(name = "films") val films: List<FilmTop>
 )
 
 @JsonClass(generateAdapter = true)

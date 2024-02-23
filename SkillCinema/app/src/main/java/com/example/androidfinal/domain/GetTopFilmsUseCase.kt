@@ -14,9 +14,8 @@ class GetTopFilmsUseCase @Inject constructor(
     suspend fun executeTopFilms(
         topType: String,
         page: Int? = 1,
-        filters: ParamsFilterFilm = ParamsFilterFilm(),
     ): List<FilmWithGenres> {
-        return repository.getFilmsTopByCategoryList(topType, page, filters)
+        return repository.getFilmsTopByCategoryList(topType, page)
     }
 
     fun executeTopFilmsPaging(categoryName: String): Flow<PagingData<FilmWithGenres>> {
