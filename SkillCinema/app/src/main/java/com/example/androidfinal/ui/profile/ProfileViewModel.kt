@@ -51,7 +51,4 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun getFilmsInCollection(collectionName: String): List<FilmWithGenres> {
-        return getFilmsHistoryUseCase.executeFilmsByCollection(collectionName)
-    }
 }

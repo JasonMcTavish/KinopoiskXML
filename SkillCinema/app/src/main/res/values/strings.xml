@@ -76,7 +76,7 @@
     <string name="search_filter_clear">Очистить фильр</string>
 
     <!-- Profile fragment -->
-    <string name="profile_label_is_viewed">Просмторено</string>
+    <string name="profile_label_is_viewed">Просмотрено</string>
     <string name="profile_label_favorite">Вам было интересно</string>
     <string name="profile_label_collections">Коллекции</string>
     <string name="profile_label_create_collection">Создать свою коллекцию</string>

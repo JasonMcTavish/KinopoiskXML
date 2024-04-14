@@ -1,34 +1,49 @@
 package com.example.androidfinal.ui.filmdetail
 
+import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.androidfinal.R
 import com.example.androidfinal.app.loadImage
 import com.example.androidfinal.data.CategoriesFilms
 import com.example.androidfinal.data.TOP_TYPES
+import com.example.androidfinal.databinding.BottomSheetBinding
+import com.example.androidfinal.databinding.CentralSheetBinding
 import com.example.androidfinal.databinding.FragmentFilmDetailBinding
 import com.example.androidfinal.db.model.FilmPersons
 import com.example.androidfinal.db.model.FilmWithDetailInfo
+import com.example.androidfinal.entity.BottomSheetItemDataModel
 import com.example.androidfinal.ui.StateLoading
+import com.example.androidfinal.ui.adapters.BottomSheetAdapterAdd
+import com.example.androidfinal.ui.adapters.BottomSheetAdapterHeader
+import com.example.androidfinal.ui.adapters.BottomSheetAdapterItem
 import com.example.androidfinal.ui.adapters.MyAdapterTypes
 import com.example.androidfinal.ui.adapters.MyListAdapter
+import com.example.androidfinal.ui.adapters.profile.ProfileAdapterTypes
 import com.example.androidfinal.ui.seasons.SeasonsFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -42,6 +57,15 @@ class FilmDetailFragment : Fragment() {
     private lateinit var makersAdapter: MyListAdapter
     private lateinit var galleryAdapter: MyListAdapter
     private lateinit var similarAdapter: MyListAdapter
+
+    private lateinit var filmInFragment: FilmWithDetailInfo
+
+    private var _bSDialog: Dialog? = null
+    private val bSDialog get() = _bSDialog!!
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -68,6 +92,7 @@ class FilmDetailFragment : Fragment() {
                         setFilmGallery(film)                        // Setup film gallery
                         setSimilar(film)                            // Setup similar film list
                         setButtonsForDB(film.film.filmId)           // Setup buttons for DB-collections
+                        filmInFragment = film
                     }
                 }
             }
@@ -204,8 +229,11 @@ class FilmDetailFragment : Fragment() {
         val makers = mutableListOf<FilmPersons>()
 
         film.persons?.forEach {
-            if (it.professionKey == "ACTOR") { actors.add(it) }
-            else { makers.add(it) }
+            if (it.professionKey == "ACTOR") {
+                actors.add(it)
+            } else {
+                makers.add(it)
+            }
         }
 
         // film actors
@@ -222,8 +250,18 @@ class FilmDetailFragment : Fragment() {
                 tempActors.map { MyAdapterTypes.ItemFilmPerson(it) }
             }
         )
-        binding.filmActorsBtn.setOnClickListener { onClickShowAllPersons(film.film.filmId, "ACTOR") }
-        binding.filmActorsCount.setOnClickListener { onClickShowAllPersons(film.film.filmId, "ACTOR") }
+        binding.filmActorsBtn.setOnClickListener {
+            onClickShowAllPersons(
+                film.film.filmId,
+                "ACTOR"
+            )
+        }
+        binding.filmActorsCount.setOnClickListener {
+            onClickShowAllPersons(
+                film.film.filmId,
+                "ACTOR"
+            )
+        }
 
         // film makers
         makersAdapter.submitList(
@@ -262,7 +300,10 @@ class FilmDetailFragment : Fragment() {
     // Similar films
     private fun setSimilar(film: FilmWithDetailInfo) {
         similarAdapter =
-            MyListAdapter(20, { onClickShowAllSimilar(film.film.filmId) }, { onClickSimilarItem(it) })
+            MyListAdapter(
+                20,
+                { onClickShowAllSimilar(film.film.filmId) },
+                { onClickSimilarItem(it) })
         binding.filmSimilarList.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.filmSimilarList.adapter = similarAdapter
@@ -352,6 +393,17 @@ class FilmDetailFragment : Fragment() {
             isViewed = if (isViewed == 1) 0 else 1
             viewModel.updateFilmMarkers(filmId, isInFavorite, isInBookmark, isViewed)
         }
+        binding.btnShare.setOnClickListener {
+            val intent = Intent()
+            intent.setAction(Intent.ACTION_SEND)
+            intent.putExtra(Intent.EXTRA_TEXT, "https://www.kinopoisk.ru/film/${filmId}/")
+            intent.setType("text/plain")
+            val share = Intent.createChooser(intent, null)
+            startActivity(share)
+        }
+        binding.btnShowMore.setOnClickListener {
+            showDialog()
+        }
     }
 
     override fun onDestroyView() {
@@ -439,6 +491,109 @@ class FilmDetailFragment : Fragment() {
 
             return result.joinToString(", ")
         }
+    }
+
+    private fun showDialog() {
+        _bSDialog = Dialog(requireActivity())
+        val bSBinding = BottomSheetBinding.inflate(layoutInflater)
+        val bSAdapterHeader = BottomSheetAdapterHeader()
+        val bSAdapterItem = BottomSheetAdapterItem { item -> onBSCheckboxClick(item) }
+        val bSAdapterAdd = BottomSheetAdapterAdd { onBSAddClick() }
+        bSBinding.recyclerView.adapter = ConcatAdapter(bSAdapterHeader, bSAdapterItem, bSAdapterAdd)
+
+        bSDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        bSDialog.setContentView(bSBinding.root)
+        bSDialog.show()
+        bSDialog.window?.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        bSDialog.window?.setGravity(Gravity.BOTTOM)
+        bSDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.collectionsList.collect { collections ->
+                    if (collections.isNotEmpty()) {
+                        val itemsList = mutableListOf<BottomSheetItemDataModel>()
+                        collections.forEach {
+                            val icon = when (it.collectionName) {
+                                getString(R.string.profile_collection_name_favorite) ->
+                                    R.drawable.ic_favorite
+
+                                getString(R.string.profile_collection_name_bookmark) ->
+                                    R.drawable.ic_bookmark
+
+                                else ->
+                                    R.drawable.ic_user_collection
+
+                            }
+
+                            val collectionIncludesCurrentFilm = viewModel.checkFilmInCollection(it.collectionName,filmInFragment.film.filmId)
+
+                            itemsList.add(
+                                BottomSheetItemDataModel(
+                                    collectionIncludesCurrentFilm, it.collectionName,
+                                    it.size,
+                                    icon
+                                )
+                            )
+                        }
+                        bSAdapterItem.submitList(itemsList.toList())
+                    }
+                }
+            }
+        }
+        lifecycleScope.launchWhenCreated {
+            if (filmInFragment.film.rating != null) {
+                bSBinding.rating.visibility = View.VISIBLE
+                bSBinding.rating.text = "${filmInFragment.film.rating}"
+            }
+            bSBinding.name.text = filmInFragment.film.name
+            bSBinding.description.text = getYearGenres(filmInFragment, requireContext())
+            bSBinding.imageView.loadImage(filmInFragment.film.poster)
+
+        }
+
+        bSBinding.buttonDismiss.setOnClickListener {
+            bSDialog.hide()
+        }
+    }
+
+    private fun showAddDialog() {
+        val addDialog = Dialog(requireActivity())
+        val addBinding = CentralSheetBinding.inflate(layoutInflater)
+        addDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        addDialog.setContentView(addBinding.root)
+        addDialog.show()
+        addDialog.window?.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        addDialog.window?.setGravity(Gravity.CENTER)
+        addDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        addBinding.buttonSave.setOnClickListener {
+
+            if (addBinding.editText.text.toString() != "") {
+                val text = addBinding.editText.text
+                viewModel.addNewCollection(text.toString())
+            }
+            bSDialog.hide()
+            showDialog()
+            addDialog.hide()
+        }
+        addBinding.buttonDismiss.setOnClickListener {
+            addDialog.hide()
+        }
+    }
+
+    private fun onBSCheckboxClick(item: BottomSheetItemDataModel) {
+        viewModel.chechBSClick(item, filmInFragment)
+    }
+
+    private fun onBSAddClick() {
+        showAddDialog()
     }
 
 }

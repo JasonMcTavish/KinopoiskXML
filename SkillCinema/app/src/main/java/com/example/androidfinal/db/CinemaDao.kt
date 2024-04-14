@@ -104,6 +104,7 @@ interface CinemaDao {
     suspend fun updateCollectionSize(name: String, size: Int)
 
 
+
     // TABLE films_history
     @Insert(entity = HistoryFilms::class, onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertHistoryFilms(filmId: HistoryFilms)
@@ -253,5 +254,5 @@ interface CinemaDao {
     @Query("SELECT * FROM film_in_collection " +
             "INNER JOIN films_short_info ON films_short_info.id = film_in_collection.film_id " +
             "WHERE collection_name = :collectionName")
-    fun getAllFilmInCollections(collectionName: String): List<FilmWithGenres>
+    fun getAllFilmInCollections(collectionName: String): List<FilmWithDetailInfo>
 }

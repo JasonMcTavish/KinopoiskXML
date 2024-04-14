@@ -10,4 +10,6 @@ class GetFilmByIdUseCase @Inject constructor(
     suspend fun executeFilmDetailInfoById(filmId: Int): FilmWithDetailInfo {
         return repository.getDetailInfoByFilm(filmId)
     }
+
+
 }

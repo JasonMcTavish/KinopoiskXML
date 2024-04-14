@@ -1,12 +1,17 @@
 package com.example.androidfinal.ui.profile
 
 import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -20,6 +25,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.androidfinal.R
 import com.example.androidfinal.app.prepareToShow
+import com.example.androidfinal.databinding.CentralSheetBinding
 import com.example.androidfinal.databinding.FragmentProfileBinding
 import com.example.androidfinal.ui.adapters.profile.CollectionDB
 import com.example.androidfinal.ui.adapters.profile.ProfileAdapter
@@ -149,16 +155,18 @@ class ProfileFragment : Fragment() {
     }
 
     private fun createNewCollectionDialog(context: Context) {
-        val builder = AlertDialog.Builder(context)
-        val inflater = LayoutInflater.from(context)
-        val dialogView = inflater.inflate(R.layout.dialog_create_collection, null)
+        val addDialog = Dialog(requireActivity())
+        val addBinding = CentralSheetBinding.inflate(layoutInflater)
+        addDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        addDialog.setContentView(addBinding.root)
+        addDialog.show()
+        addDialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        addDialog.window?.setGravity(Gravity.CENTER)
+        addDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        val editTextCollectionName = dialogView.findViewById(R.id.et_add_collection) as EditText
-        val btnAddCollection = dialogView.findViewById(R.id.btn_add_collection) as Button
+        val editTextCollectionName = addBinding.editText
+        val btnAddCollection = addBinding.buttonSave
 
-        builder.setView(dialogView)
-
-        val dialog = builder.create()
 
         btnAddCollection.setOnClickListener {
             val text = editTextCollectionName.text.toString()
@@ -166,9 +174,9 @@ class ProfileFragment : Fragment() {
             Toast
                 .makeText(context, "Добавлена новая коллекция: $text", Toast.LENGTH_SHORT)
                 .show()
-            dialog.dismiss()
+            addDialog.dismiss()
         }
-        dialog.show()
+        addDialog.show()
     }
 
     private fun onFilmClick(filmId: Int) {

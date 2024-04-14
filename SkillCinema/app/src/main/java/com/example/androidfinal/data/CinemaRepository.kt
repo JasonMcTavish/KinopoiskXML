@@ -318,7 +318,7 @@ class CinemaRepository @Inject constructor(
         apiDatabase.clearAllFromViewed()
     }
 
-    private suspend fun insertFilmInCollection(filmId: Int, collectionName: String) {
+    suspend fun insertFilmInCollection(filmId: Int, collectionName: String) {
         val isFilmInCollection = apiDatabase.checkFilmInCollection(collectionName, filmId)
         if (isFilmInCollection == 0) {
             apiDatabase.insertFilmInCollection(
@@ -326,6 +326,15 @@ class CinemaRepository @Inject constructor(
                     collectionName = collectionName, filmId = filmId
                 )
             )
+            val size = apiDatabase.getCollectionSize(collectionName)
+            apiDatabase.updateCollectionSize(collectionName, size)
+        }
+    }
+
+    suspend fun deleteFilmFromCollection(filmId: Int, collectionName: String) {
+        val isFilmInCollection = apiDatabase.checkFilmInCollection(collectionName, filmId)
+        if (isFilmInCollection == 1) {
+            apiDatabase.deleteFilmFromCollection(filmId, collectionName)
             val size = apiDatabase.getCollectionSize(collectionName)
             apiDatabase.updateCollectionSize(collectionName, size)
         }
@@ -339,9 +348,10 @@ class CinemaRepository @Inject constructor(
         return apiDatabase.getAllCollections()
     }
 
-    fun getFilmsByCollection(collectionName: String): List<FilmWithGenres> {
-        return apiDatabase.getAllFilmInCollections(collectionName)
+    fun checkFilmInCollection(collectionName: String, filmId: Int): Int {
+        return apiDatabase.checkFilmInCollection(collectionName, filmId)
     }
+
 
     companion object {
         private const val COLLECTION_FAVORITE_NAME = "Любимые"

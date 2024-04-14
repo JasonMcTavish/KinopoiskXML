@@ -2,6 +2,7 @@ package com.example.androidfinal.domain
 
 import com.example.androidfinal.data.CinemaRepository
 import com.example.androidfinal.db.model.CollectionFilms
+import com.example.androidfinal.db.model.FilmWithDetailInfo
 import com.example.androidfinal.db.model.FilmWithGenres
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -37,11 +38,20 @@ class GetFilmsHistoryUseCase @Inject constructor(
         return repository.getAllCollections()
     }
 
-    fun executeFilmsByCollection(collectionName: String): List<FilmWithGenres> {
-        return repository.getFilmsByCollection(collectionName)
+    fun checkFilmInCollection(collectionName: String, filmId: Int): Int {
+        return repository.checkFilmInCollection(collectionName, filmId)
     }
+
 
     suspend fun addNewCollection(collectionName: String) {
         return repository.addCollection(name = collectionName)
+    }
+
+    suspend fun addNewFilmInCollections(filmId: Int, collectionName: String){
+        return repository.insertFilmInCollection(filmId,collectionName)
+    }
+
+    suspend fun deleteFilmFromCollections(filmId: Int, collectionName: String){
+        return repository.deleteFilmFromCollection(filmId,collectionName)
     }
 }
