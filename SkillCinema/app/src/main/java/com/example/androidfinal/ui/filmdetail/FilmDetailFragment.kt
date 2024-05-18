@@ -595,5 +595,5 @@ class FilmDetailFragment : Fragment() {
     private fun onBSAddClick() {
         showAddDialog()
     }
-
+//
 }
