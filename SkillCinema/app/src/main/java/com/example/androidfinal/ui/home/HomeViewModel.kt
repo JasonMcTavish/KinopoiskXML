@@ -23,7 +23,6 @@ class HomeViewModel @Inject constructor(
     init {
         getFilmsByCategories()
         Log.d(TAG, "home: init")
-//        Log.d(TAG, "${TOP_TYPES.getValue(CategoriesFilms.AWAIT)}: ")
     }
 
     private val _homePageList = MutableStateFlow<List<HomeList>>(emptyList())
@@ -76,7 +75,11 @@ class HomeViewModel @Inject constructor(
                 _homePageList.value = list
                 _loadCategoryState.value = StateLoading.Success
             } catch (e: Throwable) {
-                _loadCategoryState.value = StateLoading.Error(e.message.toString())
+                if (e.message != null) {
+                    _loadCategoryState.value = StateLoading.Error(e.message.toString())
+                } else {
+                    _loadCategoryState.value = StateLoading.Error("null in message")
+                }
             }
         }
     }
