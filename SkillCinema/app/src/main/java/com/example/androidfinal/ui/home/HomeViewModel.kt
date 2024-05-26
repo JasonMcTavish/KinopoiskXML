@@ -22,7 +22,6 @@ class HomeViewModel @Inject constructor(
 
     init {
         getFilmsByCategories()
-        Log.d(TAG, "home: init")
     }
 
     private val _homePageList = MutableStateFlow<List<HomeList>>(emptyList())
@@ -47,7 +46,7 @@ class HomeViewModel @Inject constructor(
                         category = CategoriesFilms.PREMIERS,
                         filmList = getTopFilmsUseCase.executeTopFilms(
                             topType = CategoriesFilms.PREMIERS.name,
-                            page = 1
+                            page = null
                         ).prepareToShow(20)
                     ),
                     HomeList(
@@ -73,13 +72,11 @@ class HomeViewModel @Inject constructor(
                     )
                 )
                 _homePageList.value = list
+                Log.d(TAG, "getFilmsByCategories: list : $list")
                 _loadCategoryState.value = StateLoading.Success
             } catch (e: Throwable) {
-                if (e.message != null) {
                     _loadCategoryState.value = StateLoading.Error(e.message.toString())
-                } else {
-                    _loadCategoryState.value = StateLoading.Error("null in message")
-                }
+                    Log.d(TAG, "getFilmsByCategories: ${e.message}")
             }
         }
     }

@@ -32,6 +32,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
@@ -83,31 +84,17 @@ class SearchFragment : Fragment() {
     private fun setAdapter() {
         filmAdapter.addLoadStateListener { state ->
             val currentState = state.refresh
-            binding.searchFilmList.isVisible = currentState != LoadState.Loading
-            binding.loadingProgress.isVisible = currentState == LoadState.Loading
-            binding.searchProgressText.isVisible = currentState != LoadState.Loading
-            binding.searchProgressImage.isVisible = currentState == LoadState.Loading
-            when (currentState) {
-                is LoadState.Loading -> {
-                    binding.searchFilmList.isVisible = false
-                    binding.searchProgressGroup.isVisible = true
-                    binding.searchProgressText.isVisible = false
-                    binding.searchProgressImage.isVisible = true
-                }
-                is LoadState.NotLoading -> {
-                    binding.searchFilmList.isVisible = true
-                    binding.loadingProgress.isVisible = false
-                    binding.searchProgressText.isVisible = false
-                    binding.searchProgressImage.isVisible = false
-
-                }
-                else -> {
-                    binding.searchFilmList.isVisible = false
-                    binding.loadingProgress.isVisible = false
-                    binding.searchProgressText.isVisible = true
-                    binding.searchProgressImage.isVisible = true
-                }
+            val isLoading = currentState is LoadState.Loading
+            binding.searchFilmList.isVisible = !isLoading
+            binding.loadingProgress.isVisible = isLoading
+            binding.searchProgressText.isVisible = !isLoading
+            binding.searchProgressImage.isVisible = isLoading
+            if (currentState is LoadState.Error) {
+                binding.searchProgressText.text = getString(R.string.search_not_found)
+            } else {
+                binding.searchProgressText.text = ""
             }
+
         }
         binding.searchFilmList.layoutManager =
             GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
@@ -133,40 +120,38 @@ class SearchFragment : Fragment() {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                binding.searchClearBtn.isVisible = viewModel.getFiltersFull().keyword.isNotEmpty()
-                binding.searchMyField.textChanges()
-                    .collect { state ->
-                        val keyword = binding.searchMyField.text.toString()
-                        if (state) {
-                            val newFilter = viewModel.getFiltersFull().copy(keyword = keyword)
-                            viewModel.updateFiltersFull(filterFilm = newFilter)
-                        }
-                    }
-            }
+            binding.searchMyField.textChanges()
+                .debounce(300)
+                .collect { state ->
+                    val keyword = binding.searchMyField.text.toString()
+                    val newFilter = viewModel.getFiltersFull().copy(keyword = keyword)
+                    viewModel.updateFiltersFull(filterFilm = newFilter)
+                }
+
         }
     }
 
     private fun getFilmList() {
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.filterFlow.collect {
-                    personAdapter.refresh()
-                    filmAdapter.refresh()
+                launch {
+                    viewModel.filterFlow.collect {
+                        personAdapter.refresh()
+                        filmAdapter.refresh()
+                    }
                 }
-            }
-        }
-        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.newFilms.collect {
-                    filmAdapter.submitData(it.map { film -> MyAdapterTypes.ItemSearchFilms(film) })
+                launch {
+                    viewModel.newFilms.collect {
+                        filmAdapter.submitData(it.map { film -> MyAdapterTypes.ItemSearchFilms(film) })
+                    }
                 }
-            }
-        }
-        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.persons.collect {
-                    personAdapter.submitData(it.map { person -> MyAdapterTypes.ItemSearchPersons(person) })
+
+                launch {
+                    viewModel.persons.collect {
+                        personAdapter.submitData(it.map { person ->
+                            MyAdapterTypes.ItemSearchPersons(person)
+                        })
+                    }
                 }
             }
         }
@@ -184,6 +169,7 @@ class SearchFragment : Fragment() {
                             .navigate(R.id.action_fragmentSearch_to_fragmentSearchSettings)
                         true
                     }
+
                     R.id.search_filters_clear -> {
                         viewModel.updateFiltersFull(ParamsFilterFilm())
                         binding.searchMyField.text?.clear()
@@ -194,6 +180,7 @@ class SearchFragment : Fragment() {
                         ).show()
                         true
                     }
+
                     else -> false
                 }
             }
@@ -207,7 +194,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun EditText.textChanges(): Flow<Boolean> {
-        return callbackFlow {
+        return callbackFlow<Boolean> {
             val watcher = object : TextWatcher {
                 override fun beforeTextChanged(
                     s: CharSequence?,
@@ -215,24 +202,19 @@ class SearchFragment : Fragment() {
                     count: Int,
                     after: Int
                 ) {
-                    trySend(false)
+
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    binding.searchClearBtn.isVisible = !s.isNullOrEmpty()
-                    viewLifecycleOwner.lifecycleScope.launch {
-                        lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                            trySend(false)
-                            delay(500)
-                            trySend(true)
-                        }
-                    }
+                    trySend(s?.isNotEmpty() == true)
                 }
 
                 override fun afterTextChanged(s: Editable?) {}
             }
             addTextChangedListener(watcher)
             awaitClose { removeTextChangedListener(watcher) }
-        }.onStart { emit(false) }
+        }
+            .debounce(300)
+            .onStart { emit(false) }
     }
 }

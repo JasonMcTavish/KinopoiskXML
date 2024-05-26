@@ -30,7 +30,9 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: HomeViewModel by viewModels()
-    private lateinit var categoryAdapter: CategoryAdapter
+    private val categoryAdapter: CategoryAdapter by lazy {
+        CategoryAdapter(20,{onClickShoAllButton(it)},{onClickFilm(it)})
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,7 +48,7 @@ class HomeFragment : Fragment() {
 
         stateLoadingListener()              // set loading listener
         getCategories()                     // set film list by categories
-        Log.d(TAG, "onViewCreated: init")
+        binding.categoryList.adapter=categoryAdapter
     }
 
     override fun onDestroyView() {
@@ -58,9 +60,7 @@ class HomeFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.homePageList.collect {
-                    categoryAdapter =
-                        CategoryAdapter(20, it, { onClickShoAllButton(it) }, { onClickFilm(it) })
-                    binding.categoryList.adapter = categoryAdapter
+                    categoryAdapter.update(it)
                 }
             }
         }

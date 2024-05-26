@@ -24,8 +24,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val getGenresCountriesUseCase: GetGenresCountriesUseCase,
-    getFilmListUseCase: GetFilmListUseCase,
-    getPersonByNameUseCase: GetPersonByNameUseCase
+    private val getFilmListUseCase: GetFilmListUseCase,
+    private val getPersonByNameUseCase: GetPersonByNameUseCase
 ) : ViewModel() {
 
     private val _filterFlow = MutableStateFlow(ParamsFilterFilm())
@@ -49,15 +49,16 @@ class SearchViewModel @Inject constructor(
             val response = getGenresCountriesUseCase.executeGenresCountries()
             countriesList = response.countries.sortedBy { it.name }.filter { it.name.isNotEmpty() }
             genresList = response.genres.sortedBy { it.name }.filter { it.name.isNotEmpty() }
+            _filterValuesCountriesGenres.value = countriesList
         }
     }
 
-    fun getFiltersFull() = _filterFlow.value
+    fun getFiltersFull(): ParamsFilterFilm {
+        return _filterFlow.value
+    }
 
     fun updateFiltersFull(filterFilm: ParamsFilterFilm) {
-        viewModelScope.launch {
             if (_filterFlow.value != filterFilm) _filterFlow.value = filterFilm
-        }
     }
 
     fun updateFilterCountriesGenres(type: String, keyword: String) {
@@ -77,9 +78,10 @@ class SearchViewModel @Inject constructor(
     }
 
     fun setFilterValues(filterType: String) {
-        when (filterType) {
-            KEY_COUNTRY -> _filterValuesCountriesGenres.value = countriesList
-            KEY_GENRE -> _filterValuesCountriesGenres.value = genresList
+       _filterValuesCountriesGenres.value =  when (filterType) {
+            KEY_COUNTRY ->  countriesList
+            KEY_GENRE ->  genresList
+            else -> emptyList()
         }
     }
 
