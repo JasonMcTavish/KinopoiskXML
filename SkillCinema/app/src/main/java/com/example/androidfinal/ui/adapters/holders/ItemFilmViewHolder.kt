@@ -1,10 +1,12 @@
 package com.example.androidfinal.ui.adapters.holders
 
 import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.androidfinal.app.loadImage
 import com.example.androidfinal.databinding.ItemFilmBinding
 import com.example.androidfinal.db.model.FilmGenres
+import com.example.androidfinal.db.model.FilmWithGenres
 import com.example.androidfinal.ui.adapters.MyAdapterTypes
 
 
@@ -29,6 +31,7 @@ class ItemFilmViewHolder(private val binding: ItemFilmBinding) :
             itemFilmPoster.loadImage(item.filmWithGenre.film.poster)
             itemFilmRating.text = item.filmWithGenre.film.rating
             itemFilmRating.isInvisible = item.filmWithGenre.film.rating == null
+            gradient.isInvisible = item.filmWithGenre.markers?.isViewed != 1
         }
         binding.itemFilm.setOnClickListener {
             clickFilms(item.filmWithGenre.film.filmId)

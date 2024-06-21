@@ -3,6 +3,7 @@ package com.example.androidfinal.ui.search
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -22,7 +23,9 @@ import androidx.paging.map
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.androidfinal.R
+import com.example.androidfinal.data.TAG
 import com.example.androidfinal.databinding.FragmentSearchBinding
+import com.example.androidfinal.entity.FilmByFilter
 import com.example.androidfinal.entity.ParamsFilterFilm
 import com.example.androidfinal.ui.adapters.MyAdapterTypes
 import com.example.androidfinal.ui.adapters.MyPagingAdapter
@@ -122,7 +125,7 @@ class SearchFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             binding.searchMyField.textChanges()
                 .debounce(300)
-                .collect { state ->
+                .collect {
                     val keyword = binding.searchMyField.text.toString()
                     val newFilter = viewModel.getFiltersFull().copy(keyword = keyword)
                     viewModel.updateFiltersFull(filterFilm = newFilter)
@@ -138,10 +141,19 @@ class SearchFragment : Fragment() {
                     viewModel.filterFlow.collect {
                         personAdapter.refresh()
                         filmAdapter.refresh()
+                        Log.d(TAG, "Filter applied, adapters refreshed")
                     }
                 }
                 launch {
                     viewModel.newFilms.collect {
+//                        Log.d(
+//                            TAG, "New films received ${
+//                                it.map { film ->
+//                                    val list = mutableListOf<FilmByFilter>()
+//                                    list.add(film)
+//                                }
+//                            }"
+//                        )
                         filmAdapter.submitData(it.map { film -> MyAdapterTypes.ItemSearchFilms(film) })
                     }
                 }
@@ -202,7 +214,6 @@ class SearchFragment : Fragment() {
                     count: Int,
                     after: Int
                 ) {
-
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {

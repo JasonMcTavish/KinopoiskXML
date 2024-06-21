@@ -8,6 +8,7 @@ import com.example.androidfinal.R
 import com.example.androidfinal.databinding.ItemFilmBinding
 import com.example.androidfinal.databinding.ItemSearchFilmBinding
 import com.example.androidfinal.databinding.ItemSearchPersonBinding
+import com.example.androidfinal.db.model.FilmWithGenres
 import com.example.androidfinal.ui.adapters.holders.ItemFilmViewHolder
 import com.example.androidfinal.ui.adapters.holders.ItemSearchFilmViewHolder
 import com.example.androidfinal.ui.adapters.holders.ItemSearchPersonViewHolder

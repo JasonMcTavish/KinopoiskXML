@@ -13,6 +13,7 @@ import com.example.androidfinal.databinding.ItemGalleryImageBinding
 import com.example.androidfinal.databinding.ItemSeriesEpisodeBinding
 import com.example.androidfinal.databinding.ItemSimilarBinding
 import com.example.androidfinal.databinding.ItemStaffDetailFilmBinding
+import com.example.androidfinal.db.model.FilmWithGenres
 import com.example.androidfinal.ui.adapters.holders.ItemFilmPersonViewHolder
 import com.example.androidfinal.ui.adapters.holders.ItemFilmShortInfoViewHolder
 import com.example.androidfinal.ui.adapters.holders.ItemFilmViewHolder

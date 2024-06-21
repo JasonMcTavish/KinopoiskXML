@@ -87,6 +87,7 @@ interface CinemaApi {
         @Query("ratingTo") ratingTo: Int,
         @Query("yearFrom") yearFrom: Int,
         @Query("yearTo") yearTo: Int,
+        @Query("imdbId") imdbId: String?,
         @Query("keyword") keyword: String,
         @Query("page") page: Int
     ): ResponseFilmsByFilter

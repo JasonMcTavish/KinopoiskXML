@@ -26,7 +26,7 @@ data class FilmByFilter(
     @Json(name = "ratingKinopoisk") val ratingKinopoisk: Double?,
     @Json(name = "ratingImdb") val ratingImdb: Double?,
     @Json(name = "type") val type: String,
-    @Json(name = "year") val year: Int?
+    @Json(name = "year") val year: String?
 )
 
 fun FilmByFilter.convertForDbShortInfo(): FilmsShortInfo {

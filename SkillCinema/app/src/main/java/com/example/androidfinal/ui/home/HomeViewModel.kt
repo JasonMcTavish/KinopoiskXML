@@ -17,12 +17,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getTopFilmsUseCase: GetTopFilmsUseCase
+    private val getTopFilmsUseCase: GetTopFilmsUseCase,
+    private val getFilmsHistoryUseCase: GetFilmsHistoryUseCase
 ) : ViewModel() {
 
     init {
         getFilmsByCategories()
     }
+
 
     private val _homePageList = MutableStateFlow<List<HomeList>>(emptyList())
     val homePageList = _homePageList.asStateFlow()

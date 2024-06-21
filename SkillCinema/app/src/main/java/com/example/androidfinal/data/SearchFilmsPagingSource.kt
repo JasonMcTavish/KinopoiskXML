@@ -1,5 +1,6 @@
 package com.example.androidfinal.data
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.androidfinal.api.CinemaApi
@@ -23,14 +24,16 @@ class SearchFilmsPagingSource(
                 genres = if (filters.value.genres.isNotEmpty()) filters.value.genres.keys.first()
                     .toString() else "",
                 order = filters.value.order,
-                type = filters.value.type,
+                type = filters.value.type.ifEmpty { "ALL" },
                 ratingFrom = filters.value.ratingFrom,
                 ratingTo = filters.value.ratingTo,
+                imdbId = filters.value.imdbId,
                 yearFrom = filters.value.yearFrom,
                 yearTo = filters.value.yearTo,
                 keyword = filters.value.keyword,
                 page = page
             )
+            Log.d(TAG, "load: $response")
             response
         }.fold(
             onSuccess = {

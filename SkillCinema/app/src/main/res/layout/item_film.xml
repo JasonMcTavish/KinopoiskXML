@@ -32,10 +32,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:elevation="7dp"
+            android:gravity="center"
             android:text="@string/btn_show_all_end"
             android:textColor="@color/black"
             android:textSize="12sp"
-            android:gravity="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btn_arrow_show_all"
@@ -56,6 +56,8 @@
             app:cardCornerRadius="4dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
+
+
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/item_film_poster"
@@ -79,6 +81,16 @@
                 android:textSize="6sp"
                 tools:text="7.8" />
 
+            <View
+                android:id="@+id/gradient"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/gradient"
+                android:visibility="visible"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
         </androidx.cardview.widget.CardView>
 
         <TextView
@@ -100,8 +112,8 @@
             android:id="@+id/item_film_genre"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingTop="2dp"
             android:maxLines="2"
+            android:paddingTop="2dp"
             android:textColor="#838390"
             app:layout_constraintEnd_toEndOf="@id/item_film_card"
             app:layout_constraintStart_toStartOf="@id/item_film_card"
