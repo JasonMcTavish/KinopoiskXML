@@ -77,7 +77,7 @@ interface CinemaApi {
     ): ResponsePersonById
 
     //  FragmentSearch
-    @GET("v2.2/films/")
+    @GET("v2.2/films")
     suspend fun getFilmsByFilter(
         @Query("countries") countries: String,
         @Query("genres") genres: String,
@@ -87,7 +87,6 @@ interface CinemaApi {
         @Query("ratingTo") ratingTo: Int,
         @Query("yearFrom") yearFrom: Int,
         @Query("yearTo") yearTo: Int,
-        @Query("imdbId") imdbId: String?,
         @Query("keyword") keyword: String,
         @Query("page") page: Int
     ): ResponseFilmsByFilter

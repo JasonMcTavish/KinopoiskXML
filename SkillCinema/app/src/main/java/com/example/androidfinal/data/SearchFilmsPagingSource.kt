@@ -23,17 +23,15 @@ class SearchFilmsPagingSource(
                     .toString() else "",
                 genres = if (filters.value.genres.isNotEmpty()) filters.value.genres.keys.first()
                     .toString() else "",
-                order = filters.value.order,
+                order = filters.value.order.ifEmpty { "RATING" },
                 type = filters.value.type.ifEmpty { "ALL" },
                 ratingFrom = filters.value.ratingFrom,
                 ratingTo = filters.value.ratingTo,
-                imdbId = filters.value.imdbId,
                 yearFrom = filters.value.yearFrom,
                 yearTo = filters.value.yearTo,
                 keyword = filters.value.keyword,
                 page = page
             )
-            Log.d(TAG, "load: $response")
             response
         }.fold(
             onSuccess = {
@@ -43,7 +41,9 @@ class SearchFilmsPagingSource(
                     nextKey = if (it.films.isEmpty()) null else page + 1
                 )
             },
-            onFailure = { LoadResult.Error(it) }
+            onFailure = {
+                Log.d(TAG, "load: ${it.message}")
+                LoadResult.Error(it) }
         )
     }
 
