@@ -235,7 +235,6 @@ class FilmDetailFragment : Fragment() {
                 makers.add(it)
             }
         }
-
         // film actors
         actorAdapter.submitList(
             if (actors.size < MAX_ACTORS_COLUMN * MAX_ACTORS_ROWS) {
